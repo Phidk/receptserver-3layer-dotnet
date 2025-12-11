@@ -1,0 +1,42 @@
+<Window x:Class="Client.Wpf.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Client.Wpf"
+        mc:Ignorable="d"
+        Title="Lægehus - Opret recept" Height="520" Width="520" MinWidth="480">
+    <ScrollViewer Padding="16">
+        <StackPanel Orientation="Vertical" VerticalAlignment="Top">
+            <TextBlock Text="Opret recept" FontSize="20" FontWeight="Bold" Margin="0 0 0 12"/>
+
+            <TextBlock Text="Ydernummer" />
+            <TextBox x:Name="ProviderNumberText" Margin="0 4 0 10" />
+
+            <TextBlock Text="ClinicId (GUID fra seeding)" />
+            <TextBox x:Name="ClinicIdText" Margin="0 4 0 10" />
+
+            <TextBlock Text="Patient CPR" />
+            <TextBox x:Name="PatientCprText" Margin="0 4 0 10" />
+
+            <TextBlock Text="Patient navn" />
+            <TextBox x:Name="PatientNameText" Margin="0 4 0 10" />
+
+            <Separator Margin="0 8"/>
+            <TextBlock Text="Ordination" FontWeight="Bold" />
+
+            <TextBlock Text="Præparat" />
+            <TextBox x:Name="DrugNameText" Margin="0 4 0 10" />
+
+            <TextBlock Text="Dosis" />
+            <TextBox x:Name="DosageText" Margin="0 4 0 10" />
+
+            <TextBlock Text="Antal udleveringer (tal)" />
+            <TextBox x:Name="AllowedText" Margin="0 4 0 12" />
+
+            <Button Content="Opret recept" Click="Submit_Click" Padding="12 6" Width="140" HorizontalAlignment="Left" />
+
+            <TextBlock x:Name="StatusText" Margin="0 12 0 0" TextWrapping="Wrap" />
+        </StackPanel>
+    </ScrollViewer>
+</Window>

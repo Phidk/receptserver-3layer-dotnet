@@ -1,0 +1,44 @@
+# Visual Studio
+.vs/
+[Bb]in/
+[Oo]bj/
+*.user
+*.suo
+*.userprefs
+*.sln.docstates
+
+# VS Code
+.vscode/
+
+# Rider / JetBrains
+.idea/
+*.sln.iml
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa]rm/
+[Aa]rm64/
+bld/
+[Ll]og/
+[Ll]ogs/
+
+# Tooling
+.dotnet/
+
+# Database (SQLite)
+# Exclude the actual database files as they change during runtime and contain local data.
+# The database schema is managed via Entity Framework Core Migrations.
+*.db
+*.db-shm
+*.db-wal
+
+# Configuration (Local)
+appsettings.Development.json
+secrets.json

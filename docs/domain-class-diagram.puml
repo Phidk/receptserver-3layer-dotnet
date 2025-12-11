@@ -1,0 +1,75 @@
+@startuml
+title Receptserver Domain Model (UML)
+header Lavet af: Phillip Møller
+left to right direction
+skinparam classAttributeIconSize 0
+
+class Clinic {
+  +Guid ClinicId
+  +string ProviderNumber
+  +string Name
+  +string Address
+}
+
+class Pharmacy {
+  +Guid PharmacyId
+  +string Name
+  +string Address
+}
+
+class Patient <<ValueObject>> {
+  +string CprNumber
+  +string FullName
+}
+
+class Prescription {
+  +Guid PrescriptionId
+  +DateTime CreatedAt
+  +PrescriptionStatus Status
+  +Guid? AssignedPharmacyId
+  +DateTime? ClosedAt
+  +void CloseIfFullyDispensed()
+  +void CloseIfExpired(DateTime referenceDate)
+}
+
+class MedicationOrder {
+  +Guid MedicationOrderId
+  +string DrugName
+  +string Dosage
+  +int AllowedDispensations
+  +int DispensedCount
+  +bool CanDispense()
+  +void RegisterDispense()
+}
+
+enum PrescriptionStatus {
+  Open
+  Closed
+}
+
+Clinic "1" -- "0..*" Prescription : prescribes >
+Patient "1" -- "0..*" Prescription : is for >
+Prescription "1" o-- "1..*" MedicationOrder : includes >
+Pharmacy "0..1" -- "0..*" Prescription : assigned >
+Pharmacy ..> Prescription : searches/dispenses >
+
+note left of Clinic
+  ProviderNumber is the clinic's unique ydernummer
+end note
+
+note left of Patient
+  CprNumber is used to search for prescriptions
+end note
+
+note right of MedicationOrder
+  RegisterDispense increments DispensedCount
+  Dispensing blocked when DispensedCount >= AllowedDispensations
+end note
+
+note right of Prescription
+  Close when all MedicationOrders are fulfilled
+  Close when CreatedAt is older than 2 years (admin job)
+  Optional assigned pharmacy allows pre-picking medication
+end note
+
+@enduml

@@ -1,0 +1,75 @@
+@model Web.Mvc.Models.ApotekViewModel
+@{
+    ViewData["Title"] = "Tildelte Recepter";
+}
+
+<div class="container mt-4">
+    <h1 class="mb-3">Recepter tildelt dette apotek</h1>
+    <p>Viser åbne recepter, der er specifikt tildelt til @Model.PharmacyName.</p>
+
+    @if (!string.IsNullOrWhiteSpace(Model.Message))
+    {
+        <div class="alert alert-success">@Model.Message</div>
+    }
+    @if (!string.IsNullOrWhiteSpace(Model.Error))
+    {
+        <div class="alert alert-danger">@Model.Error</div>
+    }
+
+    @if (Model.Prescriptions.Any())
+    {
+        foreach (var p in Model.Prescriptions)
+        {
+            <div class="card mb-3">
+                <div class="card-header d-flex justify-content-between">
+                    <div>
+                        <strong>@p.PatientName</strong> (@p.PatientCpr)
+                    </div>
+                    <div class="text-muted">Recept: @p.PrescriptionId</div>
+                </div>
+                <div class="card-body">
+                    <table class="table table-sm align-middle">
+                        <thead>
+                            <tr>
+                                <th>Præparat</th>
+                                <th>Dosis</th>
+                                <th>Udleveret / Tilladt</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var o in p.MedicationOrders)
+                        {
+                            <tr>
+                                <td>@o.DrugName</td>
+                                <td>@o.Dosage</td>
+                                <td>@o.DispensedCount / @o.AllowedDispensations</td>
+                                <td class="text-end">
+                                    @if (o.CanDispense)
+                                    {
+                                        <form asp-action="Dispense" method="post" class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="prescriptionId" value="@p.PrescriptionId" />
+                                            <input type="hidden" name="medicationOrderId" value="@o.MedicationOrderId" />
+                                            <input type="hidden" name="cpr" value="@p.PatientCpr" />
+                                            <button type="submit" class="btn btn-sm btn-success">Udlever</button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">Fuldt udleveret</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="alert alert-info">Ingen åbne recepter er tildelt dette apotek.</div>
+    }
+</div>

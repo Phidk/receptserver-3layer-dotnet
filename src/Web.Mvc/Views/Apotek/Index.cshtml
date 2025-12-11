@@ -1,0 +1,83 @@
+@model Web.Mvc.Models.ApotekViewModel
+@{
+    ViewData["Title"] = "Apotek - Søg og udlever";
+}
+
+<div class="container mt-4">
+    <h1 class="mb-3">Apotek</h1>
+    <form asp-action="Search" method="post" class="row g-3 mb-4">
+        <div class="col-md-6">
+            <label for="cpr" class="form-label">CPR</label>
+            <input type="text" class="form-control" id="cpr" name="cpr" value="@Model.Cpr" placeholder="Indtast CPR (10 cifre)" />
+        </div>
+        <div class="col-md-3 align-self-end">
+            <button type="submit" class="btn btn-primary">Søg recepter</button>
+        </div>
+    </form>
+
+    @if (!string.IsNullOrWhiteSpace(Model.Message))
+    {
+        <div class="alert alert-success">@Model.Message</div>
+    }
+    @if (!string.IsNullOrWhiteSpace(Model.Error))
+    {
+        <div class="alert alert-danger">@Model.Error</div>
+    }
+
+    @if (Model.Prescriptions.Any())
+    {
+        foreach (var p in Model.Prescriptions)
+        {
+            <div class="card mb-3">
+                <div class="card-header d-flex justify-content-between">
+                    <div>
+                        <strong>@p.PatientName</strong> (@p.PatientCpr)
+                    </div>
+                    <div class="text-muted">Recept: @p.PrescriptionId</div>
+                </div>
+                <div class="card-body">
+                    <table class="table table-sm align-middle">
+                        <thead>
+                            <tr>
+                                <th>Præparat</th>
+                                <th>Dosis</th>
+                                <th>Udleveret / Tilladt</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var o in p.MedicationOrders)
+                        {
+                            <tr>
+                                <td>@o.DrugName</td>
+                                <td>@o.Dosage</td>
+                                <td>@o.DispensedCount / @o.AllowedDispensations</td>
+                                <td class="text-end">
+                                    @if (o.CanDispense)
+                                    {
+                                        <form asp-action="Dispense" method="post" class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="prescriptionId" value="@p.PrescriptionId" />
+                                            <input type="hidden" name="medicationOrderId" value="@o.MedicationOrderId" />
+                                            <input type="hidden" name="cpr" value="@Model.Cpr" />
+                                            <button type="submit" class="btn btn-sm btn-success">Udlever</button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">Fuldt udleveret</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+    }
+    else if (!string.IsNullOrWhiteSpace(Model.Cpr))
+    {
+        <div class="alert alert-info">Ingen åbne recepter fundet for @Model.Cpr.</div>
+    }
+</div>

@@ -1,0 +1,28 @@
+@{
+    ViewData["Title"] = "Admin Job Runner";
+}
+
+<div class="container mt-4">
+    <h1 class="mb-3">Admin Jobs</h1>
+    <p>Denne side kan bruges til at køre administrative jobs.</p>
+
+    @if (!string.IsNullOrWhiteSpace(TempData["Message"] as string))
+    {
+        <div class="alert alert-success">@TempData["Message"]</div>
+    }
+    @if (!string.IsNullOrWhiteSpace(TempData["Error"] as string))
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Luk Udløbne Recepter</h5>
+            <p class="card-text">Dette job finder alle åbne recepter, der er mere end 2 år gamle, og lukker dem.</p>
+            <form asp-action="RunCloseExpiredJob" method="post">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-warning">Kør Job</button>
+            </form>
+        </div>
+    </div>
+</div>
